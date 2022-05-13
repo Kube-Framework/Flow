@@ -58,7 +58,7 @@ TEST(Scheduler, BasicTask)
         ASSERT_EQ(trigger, true);
 
         // Spin in execution loop is way faster
-        for (int k = 0; k < RepeatCount; ++k) {
+        for (std::size_t k = 0; k < RepeatCount; ++k) {
             trigger = false;
             scheduler.schedule(graph);
             graph.waitSpin();
@@ -81,7 +81,7 @@ TEST(Scheduler, SequenceTask)
                 last->before(tmp);
             last = &tmp;
         }
-        for (int k = 0; k < RepeatCount; ++k) {
+        for (std::size_t k = 0; k < RepeatCount; ++k) {
             trigger = 0;
             scheduler.schedule(graph);
             graph.waitSpin();
@@ -104,7 +104,7 @@ TEST(Scheduler, MergeTask)
                 .before(last);
         }
 
-        for (int k = 0; k < RepeatCount; ++k) {
+        for (std::size_t k = 0; k < RepeatCount; ++k) {
             scheduler.schedule(graph);
             graph.waitSpin();
             ASSERT_EQ(trigger, 100);
@@ -124,7 +124,7 @@ TEST(Scheduler, ConditionTask)
         a.before(b); // False returned
         a.before(c); // True returned
 
-        for (int k = 0; k < RepeatCount; ++k) {
+        for (std::size_t k = 0; k < RepeatCount; ++k) {
             trigger = 0;
             scheduler.schedule(graph);
             graph.waitSpin();
@@ -158,7 +158,7 @@ TEST(Scheduler, SwitchTask)
         d.after(a); // 2 Returned
         e.after(a); // 3 Returned -> out of range, do not repeat
 
-        for (int k = 0; k < RepeatCount; ++k) {
+        for (std::size_t k = 0; k < RepeatCount; ++k) {
             trigger = 0;
             // In range tests
             for (auto i = 1; i <= 4; ++i) {
@@ -197,7 +197,7 @@ TEST(Scheduler, SwitchTaskAdvanced)
         f.after(d);
         f.after(e);
 
-        for (int k = 0; k < RepeatCount; ++k) {
+        for (std::size_t k = 0; k < RepeatCount; ++k) {
             trigger = 0;
             scheduler.schedule(graph);
             graph.waitSpin();
@@ -228,7 +228,7 @@ TEST(Scheduler, SwitchMergePattern)
         merge.after(b);
         merge.after(c);
 
-        for (int k = 0; k < RepeatCount; ++k) {
+        for (std::size_t k = 0; k < RepeatCount; ++k) {
             for (auto l = 0; l != 3; ++l) {
                 trigger = 0;
                 condition = l;
@@ -268,7 +268,7 @@ TEST(Scheduler, GraphTask)
         b.before(c);
         c.before(d);
 
-        for (int k = 0; k < RepeatCount; ++k) {
+        for (std::size_t k = 0; k < RepeatCount; ++k) {
             trigger = 0;
             scheduler.schedule(graph);
             graph.waitSpin();

@@ -23,7 +23,7 @@ inline kF::Flow::Task &kF::Flow::Graph::add(void) noexcept
     invalidateScheduleCache();
 
     std::conditional_t<IsSwitchWork, Task::SwitchWork, Task::StaticWork> work;
-    work.prepare<Function>();
+    work.template prepare<Function>();
     return *_tasks.push(TaskPtr::Make(*this, std::move(work)));
 }
 
