@@ -61,7 +61,7 @@ public:
         alignas(8) std::uint32_t index {};
         WorkerQueue &queue;
         Task *task { nullptr };
-        Core::TinySmallVector<PendingGraph, 5, FlowAllocator> pendingGraphs {};
+        Core::SmallVector<PendingGraph, 5, FlowAllocator> pendingGraphs {};
     };
     static_assert_fit_double_cacheline(WorkerCache);
 
@@ -86,8 +86,8 @@ private:
     Core::MPMCQueue<Task *, FlowAllocator> _taskQueue;
 
     // Cacheline 4 & 5
-    Core::TinyHeapArray<WorkerQueue, FlowAllocator> _workers {}; // Worker array
-    Core::TinyHeapArray<std::jthread> _threads {}; // We don't use FlowAllocator because threads are permanently unaccessed until destruction
+    Core::HeapArray<WorkerQueue, FlowAllocator> _workers {}; // Worker array
+    Core::HeapArray<std::jthread> _threads {}; // We don't use FlowAllocator because threads are permanently unaccessed until destruction
 
     // Cacheline 6 & 7
     alignas_double_cacheline std::atomic_bool _running { true };

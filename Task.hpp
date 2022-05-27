@@ -20,10 +20,10 @@ namespace kF::Flow
     using TaskPtr = Core::UniquePtr<Task, FlowAllocator>;
 
     /** @brief List of tasks */
-    using TaskList = Core::TinyVector<TaskPtr, FlowAllocator>;
+    using TaskList = Core::Vector<TaskPtr, FlowAllocator>;
 
     /** @brief List of task references */
-    using TaskRefList = Core::TinyVector<Task *, FlowAllocator>;
+    using TaskRefList = Core::Vector<Task *, FlowAllocator>;
 }
 
 /** @brief Task in a graph */
