@@ -17,7 +17,7 @@ using namespace kF;
 Flow::Scheduler::~Scheduler(void) noexcept
 {
     _running.store(false, std::memory_order_relaxed);
-    _notifier.release(workerCount()); // Release all sleeping workers (Scheduler enter into non-reusable state)
+    _sync.notifier.notify_all(); // Release all sleeping workers (Scheduler enter into non-reusable state)
 }
 
 Flow::Scheduler::Scheduler(const std::size_t workerCount, const std::size_t taskQueueSize) noexcept
@@ -269,7 +269,7 @@ bool Flow::Scheduler::waitWorkerTask(WorkerCache &cache) noexcept
 
     // If scheduler is still running, start sleeping
     if (_running.load(std::memory_order_relaxed)) [[likely]] {
-        sleepWorker();
+        sleepWorker(cache);
         return _running.load(std::memory_order_relaxed);
     } else
         return false;
@@ -308,12 +308,13 @@ bool Flow::Scheduler::stealWorkerTask(WorkerCache &cache) noexcept
     return cache.task != nullptr;
 }
 
-void Flow::Scheduler::sleepWorker(void) noexcept
+void Flow::Scheduler::sleepWorker(WorkerCache &cache) noexcept
 {
-    _notifier.acquire();
+    std::unique_lock lock(_sync.mutex);
+    _sync.notifier.wait(lock);
 }
 
 void Flow::Scheduler::notifyWorker(void) noexcept
 {
-    _notifier.release();
+    _sync.notifier.notify_one();
 }

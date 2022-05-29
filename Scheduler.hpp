@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <semaphore>
+#include <condition_variable>
 
 #include <Kube/Core/SmallVector.hpp>
 #include <Kube/Core/MPMCQueue.hpp>
@@ -65,6 +65,14 @@ public:
     };
     static_assert_fit_double_cacheline(WorkerCache);
 
+    struct Sync
+    {
+        alignas_double_cacheline std::condition_variable notifier {};
+        alignas_double_cacheline std::mutex mutex {};
+    };
+    static_assert_alignof_double_cacheline(Sync);
+    static_assert_sizeof(Sync, Core::CacheLineDoubleSize * 2);
+
 
     /** @brief Destroy and join all workers */
     ~Scheduler(void) noexcept;
@@ -92,14 +100,14 @@ private:
     // Cacheline 6 & 7
     alignas_double_cacheline std::atomic_bool _running { true };
 
-    // Cacheline 8 & 9
-    alignas_double_cacheline std::counting_semaphore<> _notifier { 0 };
-
     // Cacheline 10 & 11
     alignas_double_cacheline std::atomic_size_t _activeWorkerCount { 0 };
 
     // Cacheline 12 & 13
     alignas_double_cacheline std::atomic_size_t _stealWorkerCount { 0 };
+
+    // Cacheline 8 -> 11
+    Sync _sync {};
 
 
     /** @brief Run worker in blocking mode (must be called inside a worker thread) */
@@ -134,7 +142,7 @@ private:
 
 
     /** @brief Put worker onto sleep until notified (must be called from a worker thread) */
-    void sleepWorker(void) noexcept;
+    void sleepWorker(WorkerCache &cache) noexcept;
 
 
     /** @brief Wake up a single worker (can be called on any thread) */
@@ -142,4 +150,4 @@ private:
 };
 
 static_assert_alignof_double_cacheline(kF::Flow::Scheduler);
-static_assert_sizeof(kF::Flow::Scheduler, kF::Core::CacheLineDoubleSize * 7);
+static_assert_sizeof(kF::Flow::Scheduler, kF::Core::CacheLineDoubleSize * 8);
