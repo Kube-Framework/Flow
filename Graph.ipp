@@ -35,6 +35,6 @@ inline kF::Flow::Task &kF::Flow::Graph::add(ClassType * const instance) noexcept
     invalidateScheduleCache();
 
     std::conditional_t<IsSwitchWork, Task::SwitchWork, Task::StaticWork> work;
-    work.prepare<MemberFunction>(instance);
+    work.template prepare<MemberFunction>(instance);
     return *_tasks.push(TaskPtr::Make(*this, std::move(work)));
 }
