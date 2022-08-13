@@ -46,7 +46,7 @@ public:
 
     /** @brief Add task into graph with a member function */
     template<auto MemberFunction, typename ClassType>
-    Task &add(ClassType * const instance) noexcept;
+    Task &add(ClassType &&instance) noexcept;
 
 
     /** @brief Remove all tasks in graph */
