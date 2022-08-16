@@ -34,11 +34,11 @@ public:
     struct NoneWork {};
 
     /** @brief Static work */
-    using StaticWork = Core::Functor<void(void), FlowAllocator, Core::CacheLineEighthSize * 5>;
+    using StaticWork = Core::Functor<void(void), FlowAllocator, Core::CacheLineEighthSize * 7>;
 
     /** @brief Switch work, can use any numeric as return type as long as it belongs inside range [0, TaskCount]
      *  @note Index TaskCount (out of the task indexing range) means no task is selected by the switch (like a 'default: break') */
-    using SwitchWork = Core::Functor<std::size_t(void), FlowAllocator, Core::CacheLineEighthSize * 5>;
+    using SwitchWork = Core::Functor<std::size_t(void), FlowAllocator, Core::CacheLineEighthSize * 7>;
 
     /** @brief Graph work */
     using GraphWork = Graph *;
