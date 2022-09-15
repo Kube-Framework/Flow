@@ -8,6 +8,7 @@
 #include <Kube/Core/Vector.hpp>
 #include <Kube/Core/Functor.hpp>
 #include <Kube/Core/SmallString.hpp>
+#include <Kube/Core/UniquePtr.hpp>
 
 #include "Base.hpp"
 

@@ -82,26 +82,6 @@ public:
 
 
 private:
-    // Cacheline 0 -> 3
-    Core::MPMCQueue<Task *, FlowAllocator> _taskQueue;
-
-    // Cacheline 4 & 5
-    Core::HeapArray<WorkerQueue, FlowAllocator> _workers {}; // Worker array
-    Core::HeapArray<std::jthread> _threads {}; // We don't use FlowAllocator because threads are permanently unaccessed until destruction
-
-    // Cacheline 6 & 7
-    alignas_double_cacheline std::atomic_bool _running { true };
-
-    // Cacheline 8 & 9
-    alignas_double_cacheline std::counting_semaphore<> _notifier { 0 };
-
-    // Cacheline 10 & 11
-    alignas_double_cacheline std::atomic_size_t _activeWorkerCount { 0 };
-
-    // Cacheline 12 & 13
-    alignas_double_cacheline std::atomic_size_t _stealWorkerCount { 0 };
-
-
     /** @brief Run worker in blocking mode (must be called inside a worker thread) */
     void runWorker(const std::uint32_t workerIndex) noexcept;
 
@@ -139,6 +119,26 @@ private:
 
     /** @brief Wake up a single worker (can be called on any thread) */
     void notifyWorker(void) noexcept;
+
+
+    // Cacheline 0 -> 3
+    Core::MPMCQueue<Task *, FlowAllocator> _taskQueue;
+
+    // Cacheline 4 & 5
+    Core::HeapArray<WorkerQueue, FlowAllocator> _workers {}; // Worker array
+    Core::HeapArray<std::jthread> _threads {}; // We don't use FlowAllocator because threads are permanently unaccessed until destruction
+
+    // Cacheline 6 & 7
+    alignas_double_cacheline std::atomic_bool _running { true };
+
+    // Cacheline 8 & 9
+    alignas_double_cacheline std::counting_semaphore<> _notifier { 0 };
+
+    // Cacheline 10 & 11
+    alignas_double_cacheline std::atomic_size_t _activeWorkerCount { 0 };
+
+    // Cacheline 12 & 13
+    alignas_double_cacheline std::atomic_size_t _stealWorkerCount { 0 };
 };
 
 static_assert_alignof_double_cacheline(kF::Flow::Scheduler);
