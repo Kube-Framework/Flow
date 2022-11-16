@@ -49,6 +49,10 @@ public:
     Task &add(ClassType &&instance) noexcept;
 
 
+    /** @brief Remove a task */
+    void remove(Task &task) noexcept;
+
+
     /** @brief Remove all tasks in graph */
     void clear(void) noexcept;
 

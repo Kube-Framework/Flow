@@ -108,6 +108,9 @@ public:
     Task &after(Task &other) noexcept;
 
 
+    /** @brief Reset before & after links */
+    void reset(void) noexcept;
+
 public: // Unsafe public functions reserved for workers
     /** @brief Try to join the task
      *  @return true The task is ready to get executed

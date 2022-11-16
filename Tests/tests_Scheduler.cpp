@@ -67,6 +67,45 @@ TEST(Scheduler, BasicTask)
     }
 }
 
+TEST(Scheduler, AddRemoveTask)
+{
+    for (auto i = 0ul; i != MaxThreads; ++i) {
+        Flow::Scheduler scheduler(i);
+        Flow::Graph graph;
+        int trigger {};
+
+        auto &task1 = graph.add([&trigger] {
+            trigger = 1;
+        });
+        auto &task2 = graph.add([&trigger] {
+            trigger = 2;
+        });
+        auto &task3 = graph.add([&trigger] {
+            trigger = 3;
+        });
+        task1.before(task2);
+        task1.before(task3);
+        task2.before(task3);
+
+        // Run graph
+        scheduler.schedule(graph);
+        graph.waitSleep();
+        ASSERT_EQ(trigger, 3);
+
+        // Remove task 2
+        graph.remove(task2);
+        scheduler.schedule(graph);
+        graph.waitSleep();
+        ASSERT_EQ(trigger, 3);
+
+        // Remove task 3
+        graph.remove(task3);
+        scheduler.schedule(graph);
+        graph.waitSleep();
+        ASSERT_EQ(trigger, 1);
+    }
+}
+
 TEST(Scheduler, SequenceTask)
 {
     for (auto i = 0ul; i != MaxThreads; ++i) {

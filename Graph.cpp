@@ -51,6 +51,15 @@ void Flow::Graph::joinTasks(const std::size_t taskCount) noexcept
     }
 }
 
+void Flow::Graph::remove(Task &task) noexcept
+{
+    invalidateScheduleCache();
+    const auto it = _tasks.find(&task);
+    kFEnsure(it != _tasks.end(), "Flow::Graph::remove: Task doesn't exists");
+    task.reset();
+    _tasks.erase(it);
+}
+
 void Flow::Graph::clear(void) noexcept
 {
     invalidateScheduleCache();
