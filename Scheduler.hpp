@@ -6,6 +6,7 @@
 #pragma once
 
 #include <semaphore>
+#include <future>
 
 #include <Kube/Core/SmallVector.hpp>
 #include <Kube/Core/MPMCQueue.hpp>
@@ -79,6 +80,10 @@ public:
 
     /** @brief Schedule execution of a graph */
     void schedule(Graph &graph) noexcept;
+
+    /** @brief Schedule execution of a task
+     *  @note The task must be valid the during whole duration of it processing */
+    void schedule(Task &task) noexcept;
 
 
 private:

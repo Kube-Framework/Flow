@@ -76,7 +76,12 @@ public:
     /** @brief Destructor */
     ~Task(void) noexcept;
 
-    /** @brief Work constructor */
+    /** @brief Constructor */
+    template<typename WorkFunc>
+    inline Task(WorkFunc &&work) noexcept
+        : _work(std::forward<WorkFunc>(work)) {}
+
+    /** @brief Graph constructor */
     template<typename WorkFunc>
     inline Task(Graph &parent, WorkFunc &&work) noexcept
         : _work(std::forward<WorkFunc>(work)), _parent(&parent) {}
@@ -126,7 +131,7 @@ private:
     Work _work;
 
     // Cacheline 1
-    Graph *_parent { nullptr };
+    Graph *_parent {};
     std::atomic_size_t _joinCount {};
     TaskRefList _linkedFrom {};
     TaskRefList _linkedTo {};

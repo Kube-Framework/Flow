@@ -55,6 +55,13 @@ void Flow::Scheduler::schedule(Graph &graph) noexcept
     }
 }
 
+void Flow::Scheduler::schedule(Task &task) noexcept
+{
+    while (!_taskQueue.push(&task))
+        std::this_thread::yield();
+    notifyWorker();
+}
+
 void Flow::Scheduler::runWorker(const std::uint32_t workerIndex) noexcept
 {
     WorkerCache cache {
@@ -175,7 +182,8 @@ void Flow::Scheduler::executeWorkerTask(WorkerCache &cache) noexcept
     }
 
     // Notify end of tasks
-    task->parent()->joinTasks(joinedTasks);
+    if (const auto parent = task->parent(); parent)
+        parent->joinTasks(joinedTasks);
 
     // Schedule target linked tasks
     if (begin != end) [[likely]]
