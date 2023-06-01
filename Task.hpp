@@ -76,6 +76,10 @@ public:
     /** @brief Destructor */
     ~Task(void) noexcept;
 
+    /** @brief Task is not copiable */
+    Task(const Task &other) noexcept = delete;
+    Task &operator=(const Task &other) noexcept = delete;
+
     /** @brief Constructor */
     template<typename WorkFunc>
     inline Task(WorkFunc &&work) noexcept

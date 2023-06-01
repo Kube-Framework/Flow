@@ -113,7 +113,7 @@ TEST(Scheduler, SequenceTask)
         Flow::Graph graph;
         int trigger = 0;
         auto func = [&trigger] { ++trigger; };
-        Flow::Task *last { nullptr };
+        Flow::Task *last {};
         for (int j = 0; j < 100; ++j) {
             auto &tmp = graph.add(func);
             if (last)

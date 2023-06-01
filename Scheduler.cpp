@@ -163,8 +163,8 @@ void Flow::Scheduler::executeWorkerTask(WorkerCache &cache) noexcept
 
     // Setup scheduled tasks and joined tasks
     std::size_t joinedTasks { 1ul };
-    Task * const *begin { nullptr };
-    Task * const *end { nullptr };
+    Task * const *begin {};
+    Task * const *end {};
     if (switchIndex == SIZE_MAX) [[likely]] {
         begin = linkedTo.begin();
         end = linkedTo.end();

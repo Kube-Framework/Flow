@@ -52,8 +52,8 @@ public:
     /** @brief Pending uncompleted graph */
     struct PendingGraph
     {
-        Task *task { nullptr };
-        Graph *graph { nullptr };
+        Task *task {};
+        Graph *graph {};
     };
 
     /** @brief Worker cache, only accessible from one worker */
@@ -61,7 +61,7 @@ public:
     {
         alignas(8) std::uint32_t index {};
         WorkerQueue &queue;
-        Task *task { nullptr };
+        Task *task {};
         Core::SmallVector<PendingGraph, 5, FlowAllocator> pendingGraphs {};
     };
     static_assert_fit_double_cacheline(WorkerCache);
