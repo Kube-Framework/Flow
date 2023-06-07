@@ -7,6 +7,7 @@
 
 #include <semaphore>
 #include <future>
+#include <thread>
 
 #include <Kube/Core/SmallVector.hpp>
 #include <Kube/Core/MPMCQueue.hpp>
@@ -14,9 +15,6 @@
 #include <Kube/Core/HeapArray.hpp>
 
 #include "Base.hpp"
-
-// Forward thread class
-namespace std { class jthread; }
 
 namespace kF::Flow
 {
@@ -131,7 +129,7 @@ private:
 
     // Cacheline 4 & 5
     Core::HeapArray<WorkerQueue, FlowAllocator> _workers {}; // Worker array
-    Core::HeapArray<std::jthread> _threads {}; // We don't use FlowAllocator because threads are permanently unaccessed until destruction
+    Core::HeapArray<std::thread> _threads {}; // We don't use FlowAllocator because threads are permanently unaccessed until destruction
 
     // Cacheline 6 & 7
     alignas_double_cacheline std::atomic_bool _running { true };

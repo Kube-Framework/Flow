@@ -31,12 +31,12 @@ void Flow::Task::reset(void) noexcept
 {
     for (Task * const link : _linkedFrom) {
         const auto it = link->_linkedTo.find(this);
-        kFEnsure("Flow::Task::reset: Self not found inside linked task");
+        kFEnsure(it != link->_linkedTo.end(), "Flow::Task::reset: Self not found inside linked task");
         link->_linkedTo.erase(it);
     }
     for (Task * const link : _linkedTo) {
         const auto it = link->_linkedFrom.find(this);
-        kFEnsure("Flow::Task::reset: Self not found inside linked task");
+        kFEnsure(it != link->_linkedFrom.end(), "Flow::Task::reset: Self not found inside linked task");
         link->_linkedFrom.erase(it);
     }
 }

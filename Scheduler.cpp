@@ -4,8 +4,6 @@
  */
 
 
-#include <thread>
-
 #include <Kube/Core/Abort.hpp>
 #include <Kube/Core/Random.hpp>
 
@@ -17,7 +15,9 @@ using namespace kF;
 Flow::Scheduler::~Scheduler(void) noexcept
 {
     _running.store(false, std::memory_order_relaxed);
-    _notifier.release(workerCount()); // Release all sleeping workers (Scheduler enter into non-reusable state)
+    _notifier.release(static_cast<ptrdiff_t>(workerCount())); // Release all sleeping workers (Scheduler enter into non-reusable state)
+    for (auto &thd : _threads)
+        thd.join();
 }
 
 Flow::Scheduler::Scheduler(const std::size_t workerCount, const std::size_t taskQueueSize) noexcept
@@ -35,7 +35,7 @@ Flow::Scheduler::Scheduler(const std::size_t workerCount, const std::size_t task
 
     std::uint32_t workerIndex { 0u };
     for (auto &thd : _threads) {
-        thd = std::jthread([this, workerIndex] {
+        thd = std::thread([this, workerIndex] {
             runWorker(workerIndex);
         });
         ++workerIndex;
@@ -223,11 +223,9 @@ void Flow::Scheduler::scheduleWorkerLinkedTasks(WorkerCache &cache, Task * const
 {
     // Schedule linked tasks
     auto it = begin;
-    std::size_t beginCount { 0u };
     while (true) {
         // Try to join linked task
         if (it != end && (*it)->tryJoin()) [[likely]] {
-            ++beginCount;
             ++it;
             continue;
         // We either reached the end of the list or an unjoinable task
