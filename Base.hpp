@@ -10,5 +10,5 @@
 namespace kF::Flow
 {
     /** @brief Allocator of the flow library */
-    using FlowAllocator = Core::StaticSafeAllocator<"FlowAllocator">;
+    struct FlowAllocator : Core::StaticSafeAllocator<"FlowAllocator"> {};
 }
