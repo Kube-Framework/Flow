@@ -6,7 +6,7 @@
 #include "Graph.hpp"
 
 template<typename WorkFunc>
-    requires std::constructible_from<kF::Flow::Task::Work, WorkFunc>
+    // requires std::constructible_from<kF::Flow::Task::Work, WorkFunc>
 inline kF::Flow::Task &kF::Flow::Graph::add(WorkFunc &&work) noexcept
 {
     invalidateScheduleCache();
@@ -15,7 +15,7 @@ inline kF::Flow::Task &kF::Flow::Graph::add(WorkFunc &&work) noexcept
 }
 
 template<auto Function>
-    requires std::constructible_from<kF::Flow::Task::Work, decltype(Function)>
+    // requires std::constructible_from<kF::Flow::Task::Work, decltype(Function)>
 inline kF::Flow::Task &kF::Flow::Graph::add(void) noexcept
 {
     constexpr bool IsSwitchWork = std::is_convertible_v<decltype([] { return (*Function)(); }), Task::SwitchWork>;

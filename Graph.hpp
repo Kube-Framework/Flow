@@ -36,12 +36,12 @@ public:
 
     /** @brief Add task into graph with a work functor */
     template<typename WorkFunc>
-        requires std::constructible_from<kF::Flow::Task::Work, WorkFunc>
+        // requires std::constructible_from<kF::Flow::Task::Work, WorkFunc>
     Task &add(WorkFunc &&work) noexcept;
 
     /** @brief Add task into graph with a free function */
     template<auto Function>
-        requires std::constructible_from<kF::Flow::Task::Work, decltype(Function)>
+        // requires std::constructible_from<kF::Flow::Task::Work, decltype(Function)>
     Task &add(void) noexcept;
 
     /** @brief Add task into graph with a member function */
